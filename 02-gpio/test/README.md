@@ -9,7 +9,7 @@
    | 0 | 0 | input | no | Tri-state, high-impedance |
    | 0 | 1 | input | yes |  |
    | 1 | 0 | output | no |  |
-   | 1 | 1 | output | yes |  |
+   | 1 | 1 | output | no |  |
 
 ### GPIO library
 
@@ -25,4 +25,4 @@
 
 3. Scheme of traffic light application with one red/yellow/green light for cars, one red/green light for pedestrians, and one push button. Connect AVR device, LEDs, resistors, push button (for pedestrians), and supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values!
 
-   ![your figure]()
+   ![your figure](picture/figure.jpg)
