@@ -37,7 +37,7 @@ The purpose of the laboratory exercise is to understand the serial control of Hi
    | :-: | :-: | :-- |
    | RS | PB0 | Register selection signal. Selection between Instruction register (RS=0) and Data register (RS=1) |
    | R/W | GND | Data read/write (0=write, 1=read) |
-   | E | PB1 | Rnable signal (loads the data on the falling edge) |
+   | E | PB1 | Enable signal (loads the data on the falling edge) |
    | D[3:0] | Unconnected |  |
    | D[7:4] | PD[7:4] |  |
    | K | PB2 | Backlight cathode |
