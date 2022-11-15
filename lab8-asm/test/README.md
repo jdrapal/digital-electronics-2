@@ -14,5 +14,5 @@
    | `pop Rd` | Rd ← STACK | This instruction loads register Rd with a byte from the STACK. The Stack Pointer is pre-incremented by 1 before the POP. | 1 |
    | `push Rr` | STACK ← Rr | This instruction stores the contents of register Rr on the STACK. The Stack Pointer is post-decremented by 1 after the PUSH. | 1 |
    | `ret` |  | Returns from the subroutine. The return address is loaded from the STACK. The Stack Pointer uses a pre-increment scheme during RET. | 2/3 |
-   | `rol Rd` | PC(15:0) ← STACK nebo PC(21:0) ← STACK |  | 1 |
+   | `rol Rd` | PC(15:0) ← STACK nebo PC(21:0) ← STACK | Shifts all bits in Rd one place to the left. The C flag is shifted into bit 0 of Rd. Bit 7 is shifted into the C flag. This operation, combined with LSL, effectively multiplies multi-byte signed and unsigned values by two. | 1 |
    | `ror Rd` | C -> b7 --------- b0 -> C | Shifts all bits in Rd one place to the right. The C flag is shifted into bit 7 of Rd. Bit 0 is shifted into the C flag. This operation, combined with ASR, effectively divides multi-byte signed values by two. Combined with LSR, it effectively divides multi-byte unsigned values by two. The Carry flag can be used to round the result. | 1 |
