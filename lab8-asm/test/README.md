@@ -1,18 +1,29 @@
-## Pre-Lab preparation
+# Lab 8: Jakub Drápal
 
-1. Use **AVR® Instruction Set Manual** from Microchip [Online Technical Documentation](https://onlinedocs.microchip.com/), find the description of selected instructions, and complete the table.
+### Instruction set
 
-   | **Instruction** | **Operation** | **Description** | **Cycles** |
-   | :-- | :-: | :-- | :-: |
-   | `add Rd, Rr` | Rd ← Rd + Rr | Adds two registers without the C flag and places the result in the destination register Rd. | 1 |
-   | `andi Rd, K` | Rd = Rd and K | Logical AND between register Rd and 8-bit constant K | 1 |
-   | `bld Rd, b` | Rd(b) ← T | Copies the T bit in the SREG (Status Register) to bit b in register Rd. | 1 |
-   | `bst Rd, b` | T ← Rd(b) | Stores bit b from Rd to the T bit in SREG (Status Register). | 1 |
-   | `com Rd` | Rd ← 0xFF - Rd | This instruction performs a One’s Complement of register Rd. | 1 |
-   | `eor Rd, Rr` | Rd ← Rd ⊕ Rr | Performs the logical EOR between the contents of register Rd and register Rr and places the result in the destination register Rd. | 1 |
-   | `mul Rd, Rr` | R1:R0 ← Rd × Rr (unsigned ← unsigned × unsigned) | The multiplicand Rd and the multiplier Rr are two registers containing unsigned numbers. The 16-bit unsigned product is placed in R1 (high byte) and R0 (low byte). Note that if the multiplicand or the multiplier is selected from R0 or R1, the result will overwrite those after multiplication. | 1 |
-   | `pop Rd` | Rd ← STACK | This instruction loads register Rd with a byte from the STACK. The Stack Pointer is pre-incremented by 1 before the POP. | 1 |
-   | `push Rr` | STACK ← Rr | This instruction stores the contents of register Rr on the STACK. The Stack Pointer is post-decremented by 1 after the PUSH. | 1 |
-   | `ret` | PC(15:0) ← STACK nebo PC(21:0) ← STACK | Returns from the subroutine. The return address is loaded from the STACK. The Stack Pointer uses a pre-increment scheme during RET. | 2/3 |
-   | `rol Rd` | C ¨ b7 --------- b0 <- C | Shifts all bits in Rd one place to the left. The C flag is shifted into bit 0 of Rd. Bit 7 is shifted into the C flag. This operation, combined with LSL, effectively multiplies multi-byte signed and unsigned values by two. | 1 |
-   | `ror Rd` | C -> b7 --------- b0 -> C | Shifts all bits in Rd one place to the right. The C flag is shifted into bit 7 of Rd. Bit 0 is shifted into the C flag. This operation, combined with ASR, effectively divides multi-byte signed values by two. Combined with LSR, it effectively divides multi-byte unsigned values by two. The Carry flag can be used to round the result. | 1 |
+1. Complete the conversion table with selected instructions:
+
+   | **Instruction** | **Binary opcode** | **Hex opcode** | **Compiler Hex opcode** |
+   | :-- | :-: | :-: | :-: |
+   | `add r24, r0` | `0000_1101_1000_0000` | `0d 80` | `80 0d` |
+   | `com r26` | `1001_0101_1010_0000` | `95 a0` | `a0 95` |
+   | `eor r26, r27` | `0010_0111_1010_1011` | `27 ab` | `ab 27` |
+   | `mul r22, r20` | `1001_1111_0110_0100` | `9f 64` | `64 9f` |
+   | `ret` | `1001_0101_0000_1000` | `95 08` | `08 95` |
+
+### 4-bit LFSR
+
+2. Complete table with 4-bit LFSR values for different Tap positions:
+
+   | **Tap position** | **Generated values** | **Length** |
+   | :-: | :-- | :-: |
+   | 4, 3 | `0 1 3 7 14 13 11 6 12 9 2 5 10 4 8` | `15` |
+   | 4, 2 | `0 1 3 6 12 8` | `6` |
+   | 4, 1 | `0 1 2 5 10 4 9 3 6 13 11 7 14 12 8` | `15` |
+
+### Variable number of short pulses
+
+3. Draw a flowchart of function `void burst_c(uint8_t number)` which generates a variable number of short pulses at output pin. Let the pulse width be the shortest one. The image can be drawn on a computer or by hand. Use clear descriptions of the individual steps of the algorithms.
+
+   ![your figure]()
