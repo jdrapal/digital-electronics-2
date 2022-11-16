@@ -105,9 +105,9 @@ Parameters between C and assembly may be passed via registers and/or the Stack m
 
    | **Instruction** | **Operation** | **Description** | **Cycles** |
    | :-- | :-: | :-- | :-: |
-   | `add Rd, Rr` |  |  |  |
-   | `mul Rd, Rr` |  |  |  |
-   | `ret` |  |  |  |
+   | `add Rd, Rr` | Rd ← Rd + Rr | Adds two registers without the C flag and places the result in the destination register Rd. | 1 |
+   | `mul Rd, Rr` | R1:R0 ← Rd × Rr (unsigned ← unsigned × unsigned) | The multiplicand Rd and the multiplier Rr are two registers containing unsigned numbers. The 16-bit unsigned product is placed in R1 (high byte) and R0 (low byte). Note that if the multiplicand or the multiplier is selected from R0 or R1, the result will overwrite those after multiplication. | 1 |
+   | `ret` | PC(15:0) ← STACK nebo PC(21:0) ← STACK | Returns from the subroutine. The return address is loaded from the STACK. The Stack Pointer uses a pre-increment scheme during RET. | 2/3 |
 
 5. Use manual's 16-bit Opcodes and convert used instructions to hexadecimal.
 
