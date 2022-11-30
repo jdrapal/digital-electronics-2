@@ -27,8 +27,8 @@
 #define JOYSTICK PD2
 #define CLK PD0
 #define DT PD1
-#define VRX PC0
-#define VRY PC1
+#define VRX PC1
+#define VRY PC0
 
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
@@ -38,6 +38,8 @@
 #include <lcd.h>            // Peter Fleury's LCD library
 #include <stdlib.h>         // C library. Needed for number conversions
 
+uint8_t x = 0;
+uint8_t y = 0;
 
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
@@ -48,20 +50,21 @@
  **********************************************************************/
 int main(void)
 {
+
     // Initialize display
     lcd_init(LCD_DISP_ON);
-    lcd_gotoxy(1, 0); lcd_puts("value:");
+    /*lcd_gotoxy(1, 0); lcd_puts("value:");
     lcd_gotoxy(3, 1); lcd_puts("key:");
     lcd_gotoxy(8, 0); lcd_puts("a");  // Put ADC value in decimal
     lcd_gotoxy(13,0); lcd_puts("b");  // Put ADC value in hexadecimal
-    lcd_gotoxy(8, 1); lcd_puts("c");  // Put button name here
-
+    lcd_gotoxy(8, 1); lcd_puts("c");  // Put button name here*/
+    lcd_init(LCD_DISP_ON_CURSOR_BLINK);
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
     ADMUX |= (1<<REFS0);
     ADMUX &= ~(1<<REFS1);
     // Select input channel ADC0 (voltage divider pin)
-    ADMUX &= ~((1<<MUX0) | (1<<MUX1) | (1<<MUX2) | (1<<MUX3));
+    //ADMUX &= ~((1<<MUX0) | (1<<MUX1) | (1<<MUX2) | (1<<MUX3));
     // Enable ADC module
     ADCSRA |= (1<<ADEN);
     // Enable conversion complete interrupt
@@ -96,8 +99,22 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
+    if (x == 0)
+    {
+        x = 1;
+        ADMUX &= ~((1<<MUX0) | (1<<MUX1) | (1<<MUX2) | (1<<MUX3));
+        ADCSRA |= (1<<ADSC);
+    }
+    else if (x == 1)
+    {
+        ADMUX |= ~(1<<MUX0);
+        ADMUX &= ~(1<<MUX1) | (1<<MUX2) | (1<<MUX3);
+        ADCSRA |= (1<<ADSC);
+        x = 0;
+    }
+    
     // Start ADC conversion
-    ADCSRA |= (1<<ADSC);
+    //ADCSRA |= (1<<ADSC);
 }
 
 /**********************************************************************
@@ -106,12 +123,67 @@ ISR(TIMER1_OVF_vect)
  **********************************************************************/
 ISR(ADC_vect)
 {
+    uint16_t xv, yv, stop;
+    
+    uint16_t pozicex = 10;
+    uint16_t pozicey = 1;
+    lcd_gotoxy(pozicex, pozicey);
+    xv = GPIO_read(&PINC, VRX);
+    yv = GPIO_read(&PINC, VRY);
+    stop = GPIO_read(&PINC, JOYSTICK);
     uint16_t value;
     char string[4];  // String for converted numbers by itoa()
 
+    itoa(xv, string, 10);
+    lcd_gotoxy(1, 0); lcd_puts("Bod x:");
+    lcd_gotoxy(8, 0);
+    lcd_puts(string);
+
+    itoa(yv, string, 10);
+    lcd_gotoxy(1, 1); lcd_puts("Bod y:");
+    lcd_gotoxy(8, 1);
+    lcd_puts(string);
+
+    if (xv == 0 & yv == 0)
+    {
+        pozicex = pozicex - 1;
+    }
+    else if (xv == 1 & yv == 0)
+    {
+        pozicey = pozicey - 1;
+    }
+    else if (xv == 0 & yv == 1)
+    {
+        pozicey = pozicey + 1;
+    }
+    else if (xv == 1 & yv == 1)
+    {
+        pozicex = pozicex + 1;
+    }
+
+    /*if(x == 1)
+    {
+        if(y == 0)
+        {
+            xv = ADC;
+        }
+        else if(y == 1)
+        {
+            yv = ADC;
+        }
+    }
     // Read converted value
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-    value = ADC;
+    itoa(xv, string, 10);
+    lcd_gotoxy(1, 0); lcd_puts("Bod x:");
+    lcd_gotoxy(8, 0);
+    lcd_puts(string);
+
+    itoa(yv, string, 10);
+    lcd_gotoxy(1, 1); lcd_puts("Bod y:");
+    lcd_gotoxy(8, 1);
+    lcd_puts(string);*/
+    /*value = ADC;
     // Convert "value" to "string" and display it
     itoa(value, string, 10);
     lcd_gotoxy(8, 0);
@@ -166,5 +238,5 @@ ISR(ADC_vect)
         lcd_puts("      ");
         lcd_gotoxy(8, 1);
         lcd_puts("RIGHT");
-    }
+    }*/
 }
