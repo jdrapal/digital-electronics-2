@@ -39,7 +39,7 @@
 #define DT PD1   
 #define CLK PD0
 
-
+uint16_t value = 0;
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
  * Function: Main function where the program execution begins
@@ -48,9 +48,10 @@
  * Returns:  none
  **********************************************************************/
 int main(void)
-{   uint16_t value = 0;
+{   
     // Initialize display
-    lcd_init(LCD_DISP_ON_CURSOR_BLINK);
+    lcd_init(LCD_DISP_ON_BLINK);
+    GPIO_mode_input_pullup(&DDRD, SW);
 
     uint8_t Play[24] = {
         0b11111,
@@ -94,17 +95,6 @@ int main(void)
 
     ADMUX |= (1<<REFS0);
     ADMUX &= ~(1<<REFS1);
-    // Select input channel ADC0 (voltage divider pin)
-    if(value == 0)
-    {
-        ADMUX &= ~((1<<MUX0) | (1<<MUX1) | (1<<MUX2) | (1<<MUX3)); 
-        value = 1;
-    }
-    else if(value == 1)
-    {
-        ADMUX &= ~((1<<MUX1) | (1<<MUX2) | (1<<MUX3)); ADMUX |= (1<<MUX0);
-        value = 0;
-    }
 
     // Enable ADC module
     ADCSRA |= (1<<ADEN);
@@ -142,8 +132,16 @@ int main(void)
  * Purpose:  Use single conversion mode and start conversion every 100 ms.
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
-{   
+{
     // Start ADC conversion
+    if(value == 0)
+    {
+        ADMUX &= ~((1<<MUX0) | (1<<MUX1) | (1<<MUX2) | (1<<MUX3)); 
+    }
+    else if(value == 1)
+    {
+        ADMUX &= ~((1<<MUX1) | (1<<MUX2) | (1<<MUX3)); ADMUX |= (1<<MUX0);
+    }
     ADCSRA |= (1<<ADSC);
 }
 ISR(TIMER2_OVF_vect)
@@ -154,18 +152,7 @@ ISR(TIMER2_OVF_vect)
     static uint8_t minutes = 0;
     char string[2];             // String for converted numbers by itoa()
 
-    
-    if (1)
-    {
-        no_of_overflows++;
-        lcd_gotoxy(10, 0);
-        lcd_puts(0x01);
-    }
-    else if (0)
-    {
-        lcd_gotoxy(10, 0);
-        lcd_puts(0x00);
-    }
+    no_of_overflows++;
     if (no_of_overflows >= 6)
     {
         // Do this every 6 x 16 ms = 100 ms
@@ -223,6 +210,14 @@ ISR(TIMER2_OVF_vect)
         lcd_gotoxy(3, 0);
         lcd_puts(":");  
     }
+    /*if (~GPIO_read(&PIND, SW))
+    {    
+        ;
+    }
+    else
+    {
+        ;
+    }*/
 }
 
 /**********************************************************************
@@ -230,67 +225,86 @@ ISR(TIMER2_OVF_vect)
  * Purpose:  Display converted value on LCD screen.
  **********************************************************************/
 ISR(ADC_vect)
-{   uint16_t xPosition = 9;
-    uint16_t yPosition = 0;
-    uint16_t xValue;
-    uint16_t yValue;
+{
+    static uint16_t xValue;
+    static uint16_t yValue;
     uint16_t stop;
     char string[4];  // String for converted numbers by itoa()
 
     // Read converted value
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-    xValue = GPIO_read(&PINC,VRX);
-    yValue = GPIO_read(&PINC,VRY);
-    stop = GPIO_read(&PIND,SW);
-    // Convert "value" to "string" and display it
-    if (1) 
-    {
-        if (xValue == 0 && yValue == 0)
-        {
-            if (xPosition <0)
-            {
-              xPosition = 15;  
-            }
-            else
-            {
-                xPosition --; 
-            }
-           
-        }
-        else if (xValue == 1 && yValue == 0)
-        {
-            if (xPosition > 1)
-            {
-              xPosition = 0;  
-            }
-            else
-            {
-                yPosition ++; 
-            } 
-        }
-        else if (xValue == 0 && yValue == 1)
-        {
-            if (xPosition > 0)
-            {
-              xPosition = 1;  
-            }
-            else
-            {
-                yPosition --; 
-            } 
-        }
-        else if (xValue == 1 && yValue == 1)
-        {
-            if (xPosition > 15)
-            {
-              xPosition = 0;  
-            }
-            else
-            {
-                xPosition ++; 
-            } 
-        }
-    }
 
-    lcd_gotoxy(xPosition, yPosition);
+
+    if (value == 0)
+    {
+        xValue = ADC;
+        value = 1;
+
+        lcd_gotoxy(0,1);
+        lcd_puts("x");
+        itoa(xValue, string, 10);
+        lcd_gotoxy(1, 1);
+        lcd_puts("    ");
+        lcd_gotoxy(1, 1);
+        lcd_puts(string);
+    }
+    else if (value == 1)
+    {
+        
+        yValue = ADC;
+        value = 0;
+
+        lcd_gotoxy(6,1);
+        lcd_puts("y");
+        itoa(yValue, string, 10);
+        lcd_gotoxy(7, 1);
+        lcd_puts("    ");
+        lcd_gotoxy(7, 1);
+        lcd_puts(string);
+    }
+    if (xValue < 100)
+    {
+        xValue = 0;
+
+        lcd_gotoxy(11, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(11,1);
+        lcd_puts("LEFT");
+    }
+    else if (xValue > 900)
+    {
+        xValue = 1;
+
+        lcd_gotoxy(11, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(11,1);
+        lcd_puts("RIGHT");
+    }
+    else if (yValue < 100)
+    {
+        yValue = 0;
+
+        lcd_gotoxy(11, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(11,1);
+        lcd_puts("DOWN");
+    }
+    else if (yValue > 900)
+    {
+        yValue = 1;
+
+        lcd_gotoxy(11, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(11,1);
+        lcd_puts("UP");
+    }
+    else
+    {
+        lcd_gotoxy(11, 1);
+        lcd_puts("     ");
+        lcd_gotoxy(11,1);
+        lcd_puts("NONE");
+    }
+    // Convert "value" to "string" and display it
+    
 }
