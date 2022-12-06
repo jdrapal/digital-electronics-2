@@ -7,16 +7,6 @@ Application of analog joy-stick (2 ADC channels, 1 push button), rotary encoder,
 * Jakub Drápal ...
 * Martin Borski ...
 
-## Instructions
-
-The goal of the project is cooperation in pairs, further study of the topic, design of own solutions, implementation, creation of project documentation and presentation of results. The division of roles and tasks within the team is up to their members.
-
-* Students work on a project in the labs during the 10th and 11th weeks of the semester.
-
-* Through the BUT e-learning, students submit a link to the GitHub repository, which contains the complete project in PlatfomIO and a descriptive README file. The submission deadline is the day before the next laboratory, i.e. in 2 weeks.
-
-* The source code for the AVR must be written in C and/or Assembly and must be implementable on Arduino Uno board using toolchains from the semester. No other development tools are allowed.
-
 ## Recommended GitHub repository structure
 
    ```c
@@ -87,13 +77,24 @@ The Pmod CLP is a 16x2 character LCD module. Users provide 8 bits of data in par
  3. **LCD:** [lcd.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/lib/lcd/lcd.c), [lcd.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/lib/lcd/lcd.h), [lcd_definitions.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/lib/lcd/lcd_definitions.h)
  4. **Source:** [main.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/src/main.c)
 
-Put flowchats of your algorithm(s). Write descriptive text of your libraries and source files. Put direct links to these files in `src` or `lib` folders.
+## Flowcharts
+
+### Flowchart of Joystick
+
+![FlowchartJoy](Pictures/FlowJS.png)
+
+### Flowchart of Rotary Encoder
+
+![FlowchartJoy](Pictures/FlowEn.png)
 
 ## Video
 
-Insert a link to a short video with your practical implementation example (1-3 minutes, e.g. on YouTube).
+
 
 ## References
 
-1. Write your text here.
-2. ...
+* [1. doc. Ing. Fryza Ph.D. DE2 - 2022 Labs](https://github.com/tomas-fryza/digital-electronics-2/tree/master/labs)
+* [2. Joystick](https://navody.dratek.cz/navody-k-produktum/arduino-joystick-ps2.html)
+* [3. Encoder](https://howtomechatronics.com/tutorials/arduino/rotary-encoder-works-use-arduino/?fbclid=IwAR1UxOQv36Y3HIfpMDaVhkYf1JpnIz0Ywbn_U0N9zagLQHEsaXvEKFfGdwQ)
+* [4. Digilent official website](https://projects.digilentinc.com/products/pmod-clp)
+* [5. Arduino Uno](https://docs.arduino.cc/retired/boards/arduino-uno-rev3-with-long-pins)
