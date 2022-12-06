@@ -91,11 +91,13 @@ The Pmod CLP is a 16x2 character LCD module. Users provide 8 bits of data in par
 
 ### JoyStick
 
-![FlowchartJoy](Pictures/VideoJoyStick.mp4)
+![Joystick](https://www.youtube.com/watch?v=OeTSnEG9XXw)
 
-![FlowchartJoy](Pictures/VideoEnSW.mp4)
+### Rotary Encoder
 
-![FlowchartJoy](Pictures/VideoRotaryEn.mp4)
+![Encoder SW](https://www.youtube.com/watch?v=fZ3fkEbZbKI)
+
+![Rotary Encoder](https://www.youtube.com/watch?v=mnLO3uU6Dow)
 
 ## References
 
