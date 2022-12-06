@@ -1,6 +1,11 @@
-# Project 1
+# Arduino Uno project
 
 Application of analog joy-stick (2 ADC channels, 1 push button), rotary encoder, and Digilent PmodCLP LCD module.
+
+### Team members
+
+* Jakub Drápal ...
+* Martin Borski ...
 
 ## Instructions
 
@@ -32,11 +37,6 @@ The goal of the project is cooperation in pairs, further study of the topic, des
    ├── platformio.ini  // Project Configuration File
    └── README.md       // Report of this project
    ```
-
-### Team members
-
-* Jakub Drápal ...
-* Martin Borski ...
 
 ## Hardware description
 
@@ -86,7 +86,6 @@ The Pmod CLP is a 16x2 character LCD module. Users provide 8 bits of data in par
  2. **Gpio:** [gpio.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/lib/gpio/gpio.c), [gpio.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/lib/gpio/gpio.h)
  3. **LCD:** [lcd.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/lib/lcd/lcd.c), [lcd.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/lib/lcd/lcd.h), [lcd_definitions.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/lib/lcd/lcd_definitions.h)
  4. **Source:** [main.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project1/src/main.c)
- 5. **Hex** [firmware.hex]()
 
 Put flowchats of your algorithm(s). Write descriptive text of your libraries and source files. Put direct links to these files in `src` or `lib` folders.
 
