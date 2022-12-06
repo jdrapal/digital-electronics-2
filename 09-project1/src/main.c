@@ -33,13 +33,17 @@
 #include <stdlib.h>         // C library. Needed for number conversions
 
 /* Defines ----------------------------------------------------------*/ 
-#define VRX PC0 
-#define VRY PC1   
-#define SW PD2 
-#define DT PD1   
-#define CLK PD0
+#define VRX PC0     //PC0 is pin where joystick x axis is connected
+#define VRY PC1     //PC1 is pin where joystick y axis is connected
+#define CLK PC2     //PC2 is pin where Rotary-encoder CLK is connected
+#define EN PD1      //PD1 is pin where rotary-encoder EN is connected
+#define DT PD3      //PD3 is pin where rotary-encoder DT is connected
+
 
 uint16_t value = 0;
+int8_t value2 = 0;
+int8_t value3 = 0;
+uint8_t CSEN, CSCLK, LSCLK, LSEN;
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
  * Function: Main function where the program execution begins
@@ -50,45 +54,24 @@ uint16_t value = 0;
 int main(void)
 {   
     // Initialize display
-    lcd_init(LCD_DISP_ON_BLINK);
-    GPIO_mode_input_pullup(&DDRD, SW);
+    lcd_init(LCD_DISP_ON);
 
-    uint8_t Play[24] = {
-        0b11111,
-        0b11011,
-        0b11011,
-        0b11111,
-        0b11000,
-        0b11000,
-        0b11000,
-        0b11000
-    };
-    lcd_command(1<<LCD_CGRAM);       // Set addressing to CGRAM (Character Generator RAM)
-                                     // ie to individual lines of character patterns
-    for (uint8_t i = 0; i < 24; i++)  // Copy new character patterns line by line to CGRAM
-        lcd_data(Play[i]);
-    lcd_command(1<<LCD_DDRAM);       // Set addressing back to DDRAM (Display Data RAM)
+    lcd_gotoxy(0, 0);
+    lcd_puts("ec");
+    lcd_gotoxy(2, 0);
+    lcd_puts("0");
+
+    lcd_gotoxy(8, 0);
+    lcd_puts("swc");
     lcd_gotoxy(10, 0);
-    lcd_putc(0x00);
+    lcd_puts("0");
 
+    GPIO_mode_input_pullup(&DDRD, EN);
+    GPIO_mode_input_nopull(&DDRD, DT);
+    GPIO_mode_input_nopull(&DDRC, CLK);
 
-    uint8_t Stop[24] = {
-        0b11111,
-        0b11111,
-        0b11000,
-        0b11111,
-        0b11111,
-        0b00011,
-        0b11111,
-        0b11111
-    };
-    lcd_command(1<<LCD_CGRAM);       // Set addressing to CGRAM (Character Generator RAM)
-                                     // ie to individual lines of character patterns
-    for (uint8_t i = 0; i < 24; i++)  // Copy new character patterns line by line to CGRAM
-        lcd_data(Stop[i]);
-    lcd_command(1<<LCD_DDRAM);       // Set addressing back to DDRAM (Display Data RAM)
-    lcd_gotoxy(10, 0);
-    lcd_putc(0x01);
+    LSCLK = GPIO_read(&PINC, CLK);
+    //LSEN = GPIO_read(&PINB, EN);
 
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
@@ -101,12 +84,12 @@ int main(void)
     // Enable conversion complete interrupt
     ADCSRA |= (1<<ADIE);
     // Set clock prescaler to 128
-    ADCSRA |= ((1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2));
+    ADCSRA |= (1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0);
 
 
     // Configure 16-bit Timer/Counter1 to start ADC conversion
-    // Set prescaler to 33 ms and enable overflow interrupt
-    TIM1_overflow_262ms();
+    // Set prescaler to 16 ms and enable overflow interrupt    
+    TIM1_overflow_4ms();
     TIM1_overflow_interrupt_enable();
 
     TIM2_overflow_16ms();
@@ -133,7 +116,6 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
-    // Start ADC conversion
     if(value == 0)
     {
         ADMUX &= ~((1<<MUX0) | (1<<MUX1) | (1<<MUX2) | (1<<MUX3)); 
@@ -142,82 +124,58 @@ ISR(TIMER1_OVF_vect)
     {
         ADMUX &= ~((1<<MUX1) | (1<<MUX2) | (1<<MUX3)); ADMUX |= (1<<MUX0);
     }
-    ADCSRA |= (1<<ADSC);
 }
 ISR(TIMER2_OVF_vect)
 {
-    static uint8_t no_of_overflows = 0;
-    static uint8_t tenths = 0;  // Tenths of a second
-    static uint8_t seconds = 0;
-    static uint8_t minutes = 0;
-    char string[2];             // String for converted numbers by itoa()
+    ADCSRA |= (1<<ADSC);
+    // Rotary encoder
+    char string[4];
 
-    no_of_overflows++;
-    if (no_of_overflows >= 6)
+    CSCLK = GPIO_read(&PINC, CLK);
+
+    if(CSCLK != LSCLK)
     {
-        // Do this every 6 x 16 ms = 100 ms
-        no_of_overflows = 0;
-        tenths++;
-
-        if(tenths>9)
+        if(GPIO_read(&PIND, DT) == CSCLK)
         {
-            tenths=0;
-            seconds++;
-            if (seconds>59)
-            {
-                seconds=0;
-                minutes++;
-            }
-        }
-        // Count tenth of seconds 0, 1, ..., 9, 0, 1, ...
-
-
-        itoa(tenths, string, 10);  // Convert decimal value to string
-        lcd_gotoxy(7, 0);
-        lcd_puts(string);
-        
-        itoa(seconds, string, 10);
-        if (seconds<10)
-        {
-            lcd_gotoxy(5, 0);
-            lcd_puts(string);
-            lcd_gotoxy(4, 0);
-            lcd_puts("0");
-        }
-        else 
-        {
-            lcd_gotoxy(4, 0);
-            lcd_puts(string);
-        }
-
-        itoa(minutes, string, 10);
-        if(minutes<10)
-        {
-            lcd_gotoxy(2, 0);
-            lcd_puts(string);
-            lcd_gotoxy(1, 0);
-            lcd_puts("0");
+            value3++;
         }
         else
         {
-            lcd_gotoxy(1, 0);
-            lcd_puts(string);
+            value3--;
         }
+    itoa(value3, string, 10);
+    lcd_gotoxy(2, 0);
+    lcd_puts("     ");
+    lcd_gotoxy(2, 0);
+    lcd_puts(string);
+    }
+    LSCLK = CSCLK;
 
-        // Display "00:00.tenths"
-        lcd_gotoxy(6, 0);
-        lcd_puts(".");
-        lcd_gotoxy(3, 0);
-        lcd_puts(":");  
-    }
-    /*if (~GPIO_read(&PIND, SW))
-    {    
-        ;
-    }
-    else
+
+    CSEN = GPIO_read(&PIND, EN);
+
+    if(CSEN != LSEN)
     {
-        ;
-    }*/
+        if(GPIO_read(&PIND, EN) == CSEN && CSEN == 1)
+        {
+            if(value2<10)
+            {
+                value2++;
+            }
+            else
+            {
+                value2 = 0;
+            }
+        }
+        itoa(value2, string, 10);
+        lcd_gotoxy(10, 0);
+        lcd_puts("  ");
+        lcd_gotoxy(10, 0);
+        lcd_puts(string);
+    }
+    LSEN = CSEN;
+
+    
 }
 
 /**********************************************************************
@@ -228,52 +186,48 @@ ISR(ADC_vect)
 {
     static uint16_t xValue;
     static uint16_t yValue;
-    uint16_t stop;
     char string[4];  // String for converted numbers by itoa()
 
     // Read converted value
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-
-
     if (value == 0)
     {
         xValue = ADC;
         value = 1;
-
-        lcd_gotoxy(0,1);
-        lcd_puts("x");
-        itoa(xValue, string, 10);
-        lcd_gotoxy(1, 1);
-        lcd_puts("    ");
-        lcd_gotoxy(1, 1);
-        lcd_puts(string);
     }
     else if (value == 1)
     {
         
         yValue = ADC;
         value = 0;
-
-        lcd_gotoxy(6,1);
-        lcd_puts("y");
-        itoa(yValue, string, 10);
-        lcd_gotoxy(7, 1);
-        lcd_puts("    ");
-        lcd_gotoxy(7, 1);
-        lcd_puts(string);
     }
+
+    lcd_gotoxy(0,1);
+    lcd_puts("x");
+    itoa(xValue, string, 10);
+    lcd_gotoxy(1, 1);
+    lcd_puts("    ");
+    lcd_gotoxy(1, 1);
+    lcd_puts(string);
+
+    lcd_gotoxy(6,1);
+    lcd_puts("y");
+    itoa(yValue, string, 10);
+    lcd_gotoxy(7, 1);
+    lcd_puts("    ");
+    lcd_gotoxy(7, 1);
+    lcd_puts(string);
+
     if (xValue < 100)
     {
-        xValue = 0;
 
         lcd_gotoxy(11, 1);
         lcd_puts("     ");
         lcd_gotoxy(11,1);
-        lcd_puts("LEFT");
+        lcd_puts("LEFT ");
     }
     else if (xValue > 900)
     {
-        xValue = 1;
 
         lcd_gotoxy(11, 1);
         lcd_puts("     ");
@@ -282,29 +236,23 @@ ISR(ADC_vect)
     }
     else if (yValue < 100)
     {
-        yValue = 0;
 
         lcd_gotoxy(11, 1);
         lcd_puts("     ");
         lcd_gotoxy(11,1);
-        lcd_puts("DOWN");
+        lcd_puts("DOWN ");
     }
     else if (yValue > 900)
     {
-        yValue = 1;
 
         lcd_gotoxy(11, 1);
         lcd_puts("     ");
         lcd_gotoxy(11,1);
-        lcd_puts("UP");
+        lcd_puts("UP   ");
     }
     else
     {
-        lcd_gotoxy(11, 1);
-        lcd_puts("     ");
         lcd_gotoxy(11,1);
-        lcd_puts("NONE");
+        lcd_puts("NONE ");
     }
-    // Convert "value" to "string" and display it
-    
 }
