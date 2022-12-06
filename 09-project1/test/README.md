@@ -89,7 +89,13 @@ The Pmod CLP is a 16x2 character LCD module. Users provide 8 bits of data in par
 
 ## Video
 
+### JoyStick
 
+![FlowchartJoy](Pictures/VideoJoyStick.mp4)
+
+![FlowchartJoy](Pictures/VideoEnSW.mp4)
+
+![FlowchartJoy](Pictures/VideoRotaryEn.mp4)
 
 ## References
 
