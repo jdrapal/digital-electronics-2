@@ -78,7 +78,7 @@ Stejnosměrný servo motor má obvykle tři vývody. Jeden pro napájení (obvyk
 
 ## Video
 
-Insert a link to a short video with your practical implementation example (1-3 minutes, e.g. on YouTube).
+![Videjko](Pictures/SimulIDE-0.4.15-SR10%20%20-%20%20C__Users_drape_AppData_Local_simulide__backup.simu_%202022-12-15%2010-45-07.mp4)
 
 ## References
 
