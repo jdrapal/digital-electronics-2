@@ -64,7 +64,17 @@ Stejnosměrný servo motor má obvykle tři vývody. Jeden pro napájení (obvyk
 
 ## Software description
 
-Put flowchats of your algorithm(s). Write descriptive text of your libraries and source files. Put direct links to these files in `src` or `lib` folders.
+| **Library name** | **Brief description** | **Usage in our code** |
+   | :-: | :-: | :-: |
+   | GPIO  | Allowing high performance digital pin access | Setting Input/Output of a pin and reading its values |
+   | Timer | Hardware block within an MCU and can be used to measure time events | Determination of refresh time of display and code cycle, also allows us to interrupt |
+
+
+   ### Source files & libraries
+
+ 1. **Timer:** [timer.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/include/timer.h)
+ 2. **Gpio:** [gpio.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/lib/gpio/gpio.c), [gpio.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/lib/gpio/gpio.h)
+ 4. **Source:** [main.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/src/main.c)
 
 ## Video
 
@@ -72,5 +82,7 @@ Insert a link to a short video with your practical implementation example (1-3 m
 
 ## References
 
-1. Write your text here.
-2. ...
+1. https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf
+2. https://navody.dratek.cz/arduino-projekty/servo-motor.html
+3. https://www.ee-diary.com/2021/07/phase-correct-pwm-with-atmega328p.html?fbclid=IwAR24t4myL5OQH8FrCGZd9OGGwccg384H3I16n2MI2PBwJB_tLiVsiZRMhus
+4. https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf
