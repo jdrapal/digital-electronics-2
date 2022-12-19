@@ -72,9 +72,9 @@ Stejnosměrný servo motor má obvykle tři vývody. Jeden pro napájení (obvyk
 
    ### Source files & libraries
 
- 1. **Timer:** [timer.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/include/timer.h)
- 2. **Gpio:** [gpio.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/lib/gpio/gpio.c), [gpio.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/lib/gpio/gpio.h)
- 4. **Source:** [main.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/src/main.c)
+ 1. **Timer:** [timer.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-Project2/include/timer.h)
+ 2. **Gpio:** [gpio.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-Project2/lib/gpio/gpio.c), [gpio.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-Project2/lib/gpio/gpio.h)
+ 4. **Source:** [main.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-Project2/src/main.c)
 
 ## Video
 
