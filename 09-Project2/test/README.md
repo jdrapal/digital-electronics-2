@@ -59,6 +59,7 @@ Stejnosměrný servo motor má obvykle tři vývody. Jeden pro napájení (obvyk
    | GPIO  | Allowing high performance digital pin access | Setting Input/Output of a pin and reading its values |
    | Timer | Hardware block within an MCU and can be used to measure time events | Determination of refresh time of display and code cycle, also allows us to interrupt |
 
+![Flowchart](Pictures/Flowchart.png)
 
    ### Source files & libraries
 
