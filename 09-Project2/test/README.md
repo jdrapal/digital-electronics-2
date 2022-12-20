@@ -1,16 +1,6 @@
 # Project 2
 
-Precise generation of several PWM channels. Application of two (or more) Servo motors SG90.
-
-## Instructions
-
-The goal of the project is cooperation in pairs, further study of the topic, design of own solutions, implementation, creation of project documentation and presentation of results. The division of roles and tasks within the team is up to their members.
-
-* Students work on a project in the labs during the 12th and 13th weeks of the semester.
-
-* Through the BUT e-learning, students submit a link to the GitHub repository, which contains the complete project in PlatfomIO and a descriptive README file. The submission deadline is the day before the next laboratory, i.e. in 2 weeks.
-
-* The source code for the AVR must be written in C and/or Assembly and must be implementable on Arduino Uno board using toolchains from the semester, ie PlatformIO and not in the Arduino-style. No other development tools are allowed.
+Precise generation of several PWM channels. Application of two Servo motors SG90.
 
 ## Recommended GitHub repository structure
 
@@ -33,8 +23,8 @@ The goal of the project is cooperation in pairs, further study of the topic, des
 
 ### Team members
 
-* Jakub Drápal (responsible for xxx)
-* Martin Borski (responsible for xxx)
+* Jakub Drápal - kód, dokumentace, zapojení
+* Martin Borski - flowchart
 
 ## Hardware description
 
@@ -69,16 +59,17 @@ Stejnosměrný servo motor má obvykle tři vývody. Jeden pro napájení (obvyk
    | GPIO  | Allowing high performance digital pin access | Setting Input/Output of a pin and reading its values |
    | Timer | Hardware block within an MCU and can be used to measure time events | Determination of refresh time of display and code cycle, also allows us to interrupt |
 
+![Flowchart](Pictures/Flowchart.png)
 
    ### Source files & libraries
 
- 1. **Timer:** [timer.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/include/timer.h)
- 2. **Gpio:** [gpio.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/lib/gpio/gpio.c), [gpio.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/lib/gpio/gpio.h)
- 4. **Source:** [main.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-project2/src/main.c)
+ 1. **Timer:** [timer.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-Project2/include/timer.h)
+ 2. **Gpio:** [gpio.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-Project2/lib/gpio/gpio.c), [gpio.h](https://github.com/jdrapal/digital-electronics-2/blob/main/09-Project2/lib/gpio/gpio.h)
+ 4. **Source:** [main.c](https://github.com/jdrapal/digital-electronics-2/blob/main/09-Project2/src/main.c)
 
 ## Video
 
-![Videjko]https://youtu.be/2RgCbM_HpiI
+https://youtu.be/2RgCbM_HpiI
 
 ## References
 
